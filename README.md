@@ -1,6 +1,7 @@
-# Projeto Microsservico
+# Documento Técnico Arquitetura de Microsserviço
 Projeto para a Disciplina Arquitetura de Software
 
+**Professor: Eduardo Cizeski Meneghel**
 **Autores: João Daniel De Liz, João Gabriel Rosso, João Pedro Acordi**
 
 Arquitetura de Microsserviços 
