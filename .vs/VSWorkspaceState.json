@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Compras",
+    "\\Compras\\Template",
+    "\\Compras\\Template\\Controllers",
+    "\\Compras\\Template\\DTO",
+    "\\Compras\\Template\\Infra"
+  ],
+  "SelectedNode": "\\Compras\\Template\\Api.http",
+  "PreviewInSolutionExplorer": false
+}
