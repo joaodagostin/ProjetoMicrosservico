@@ -1,49 +1,62 @@
-﻿namespace EstoqueService.Services
+﻿using MicrosservicoEstoque.Models;
+using MicrosservicoEstoque.Infra;
+using Microsoft.EntityFrameworkCore;
+
+namespace MicrosservicoEstoque.Services
 {
     public class EstoqueServices
     {
-        private static List<Produto> _estoque = new();
+        private readonly DatabaseContext _context;
 
-        public List<Produto> ListarEstoque()
+        public EstoqueServices(DatabaseContext context)
         {
-            return _estoque;
+            _context = context;
+
         }
 
-        public bool AdicionarProduto(int produtoId, string nome, int quantidade)
+        public async Task<List<ProdutoEstoque>> ObterInformacoesEstoque()
         {
-            var produto = _estoque.FirstOrDefault(p => p.ProdutoId == produtoId);
-            if (produto != null)
+            return await _context.ProdutoEstoque.ToListAsync();
+        }
+
+        public async Task AdicionarMedicamentoAsync(Medicamentos medicamento)
+        {
+            var produtoExistente = await _context.Medicamentos.FindAsync(medicamento.Id);
+
+            if (produtoExistente != null)
             {
-                produto.Quantidade += quantidade;
+                produtoExistente.Quantidade += medicamento.Quantidade;
+                _context.Medicamentos.Update(produtoExistente);
             }
             else
             {
-                _estoque.Add(new Produto { ProdutoId = produtoId, Nome = nome, Quantidade = quantidade });
+                await _context.Medicamentos.AddAsync(medicamento);
             }
 
-            return true;
+            await _context.SaveChangesAsync();
         }
 
-        public bool RemoverProduto(int produtoId, int quantidade)
+        public async Task<bool> RemoverMedicamentoAsync(int id, int quantidade)
         {
-            var produto = _estoque.FirstOrDefault(p => p.ProdutoId == produtoId);
+            var medicamento = await _context.Medicamentos.FindAsync(id);
+            if (medicamento == null || medicamento.Quantidade < quantidade)
+            {
+                return false; // Não há estoque suficiente ou medicamento inexistente
+            }
 
-            if (produto == null || produto.Quantidade < quantidade)
-                return false;
+            medicamento.Quantidade -= quantidade;
 
-            produto.Quantidade -= quantidade;
+            if (medicamento.Quantidade == 0)
+            {
+                _context.Medicamentos.Remove(medicamento);
+            }
+            else
+            {
+                _context.Medicamentos.Update(medicamento);
+            }
 
-            if (produto.Quantidade == 0)
-                _estoque.Remove(produto);
-
+            await _context.SaveChangesAsync();
             return true;
         }
-    }
-
-    public class Produto
-    {
-        public int ProdutoId { get; set; }
-        public string Nome { get; set; }
-        public int Quantidade { get; set; }
     }
 }

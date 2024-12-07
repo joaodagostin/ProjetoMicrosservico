@@ -1,7 +1,7 @@
 ﻿{
     "profiles": {
         "http": {
-            "commandName": "Venda",
+            "commandName": "Project",
             "dotnetRunMessages": true,
             "applicationUrl": "http://localhost:5091",
             "environmentVariables": {
